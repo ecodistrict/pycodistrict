@@ -2,9 +2,14 @@ import uuid
 import json
 from pyimb import imb
 import logging
+from enum import Enum
 
 MODELS_EVENT = 'models'
 DASHBOARD_EVENT = 'dashboard'
+
+class ModelStatus(Enum):
+    """Statuses of a Model"""
+    STARTING = 'starting'
 
 class Module(object):
     """ECODISTR-ICT module"""
@@ -69,6 +74,16 @@ class Module(object):
             response['kpiAlias'] = request['kpiAlias']
             response['inputs'] = self._inputs
             self._send_message(response)
+
+        elif request['startModel']:
+            response['variantId'] = request['variantId']
+            response['moduleId'] = request['moduleId']
+            response['kpiAlias'] = request['kpiAlias']
+            response['status'] = ModelStatus.STARTING
+            #TODO: self.start_model() something
+            self._send_message(response)
+
+
         else:
             raise NotImplementedError()
 
