@@ -13,8 +13,8 @@ class ModelStatus(Enum):
     """Statuses of a Model"""
     STARTING = 'starting'
 
-class Module(object):
-    """ECODISTR-ICT module"""
+class Model(object):
+    """ECODISTR-ICT model"""
     def __init__(self,):
         super().__init__()
 
@@ -112,15 +112,15 @@ class Module(object):
 
         self._send_message(message)
 
-class ExcelModule(Module):
-    """docstring for ExcelModule"""
+class ExcelModel(Model):
+    """docstring for ExcelModel"""
     def __init__(self):
         super().__init__()
-        self._name = "Excel module"
-        self._id = "sp-excel-module"
+        self._name = "Excel model"
+        self._id = "sp-excel-model"
         self._description = "Interface to an Excel file."
         self._kpi_list = ['kpi1', 'kpi2']
         self._inputs = []
 
     def run_model(self, inputs, kpi_alias):
-        return 'ExcelModule calculated KPI {0}!'.format(kpi_alias)
+        return 'ExcelModel calculated KPI {0}!'.format(kpi_alias)
