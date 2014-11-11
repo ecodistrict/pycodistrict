@@ -1,0 +1,3 @@
+[submodule "pyimb"]
+	path = pyimb
+	url = git@github.com:ecodistrict/pyimb.git
