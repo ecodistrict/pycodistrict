@@ -120,6 +120,7 @@ class ExcelModule(Module):
         self._id = "sp-excel-module"
         self._description = "Interface to an Excel file."
         self._kpi_list = ['kpi1', 'kpi2']
+        self._inputs = []
 
     def run_model(self, inputs, kpi_alias):
         return 'ExcelModule calculated KPI {0}!'.format(kpi_alias)
