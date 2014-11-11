@@ -86,7 +86,7 @@ class Module(object):
 
 
         else:
-            raise NotImplementedError()
+            raise NotImplementedError('Method {0} not implemented.'.format(request[method]))
 
     def _send_message(self, message):
         logging.debug('Sending message: {0}'.format(message))
