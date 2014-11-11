@@ -33,6 +33,7 @@ class Module(object):
     @client.setter
     def client(self, value):
         self._client = value
+        logging.debug('Registering client...')
         models_event = self._client.subscribe('models')
         logging.debug('Subscribed to models')
         models_event.add_handler(imb.ekNormalEvent, self._handle_request)
@@ -42,6 +43,8 @@ class Module(object):
     def _handle_request(self, payload):
         request = json.loads(imb.decode_string(payload))
 
+        assert(request['type'] == 'request')
+
         logging.debug('Got request: {0}'.format(request))
 
         response = {'method': request['method'], 'type': 'response'}
@@ -50,7 +53,16 @@ class Module(object):
             response['name'] = self.name
             response['id'] = self.id
             response['description'] = self.description
-            response['kpilist'] = self.kpilist
+            response['kpiList'] = self.kpilist
+            self._send_message(response)
+
+        elif request['method'] == 'selectModel':
+            if request['moduleId'] != self.id:
+                return
+
+            response['variantId'] = request['variantId']
+            inputs = json.loads(open('inputexampleInputGroup.js', 'r').read())
+            response['inputs'] = inputs['inputs']
             self._send_message(response)
         else:
             raise NotImplementedError()
