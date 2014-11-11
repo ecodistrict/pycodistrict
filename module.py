@@ -16,8 +16,8 @@ class Module(object):
         return self._name
     
     @property
-    def kpilist(self):
-        return self._kpilist
+    def kpi_list(self):
+        return self._kpi_list
 
     @property
     def id(self):
@@ -26,6 +26,10 @@ class Module(object):
     @property
     def description(self):
         return self._description
+
+    @property
+    def inputs(self):
+        return self._inputs    
 
     @property
     def client(self):
@@ -53,7 +57,7 @@ class Module(object):
             response['name'] = self.name
             response['id'] = self.id
             response['description'] = self.description
-            response['kpiList'] = self.kpilist
+            response['kpiList'] = self.kpi_list
             self._send_message(response)
 
         elif request['method'] == 'selectModel':
@@ -61,8 +65,9 @@ class Module(object):
                 return
 
             response['variantId'] = request['variantId']
-            inputs = json.loads(open('inputexampleInputGroup.js', 'r').read())
-            response['inputs'] = inputs['inputs']
+            response['moduleId'] = request['moduleId']
+            response['kpiAlias'] = request['kpiAlias']
+            response['inputs'] = self._inputs
             self._send_message(response)
         else:
             raise NotImplementedError()
@@ -79,7 +84,7 @@ class ExcelModule(Module):
         self._name = "Excel module"
         self._id = "sp-excel-module"
         self._description = "Interface to an Excel file."
-        self._kpilist = ['kpi1', 'kpi2']
+        self._kpi_list = ['kpi1', 'kpi2']
 
 
     
