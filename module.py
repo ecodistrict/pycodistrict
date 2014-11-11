@@ -74,7 +74,7 @@ class Module(object):
             response['inputs'] = self._inputs
             self._send_message(response)
 
-        elif request['startModel']:
+        elif request['method'] == 'startModel':
             if request['moduleId'] != self.id:
                 return
             response['variantId'] = request['variantId']
