@@ -96,7 +96,7 @@ class Module(object):
         logging.debug('Sending message: {0}'.format(message))
         self._dashboard_event.signal_string(json.dumps(message))
 
-    def _run_and_respond(request):
+    def _run_and_respond(self, request):
         model_inputs = request['inputs']
         kpi_alias = request['kpiAlias']
         model_outputs = self.run_model(model_inputs, kpi_alias)
