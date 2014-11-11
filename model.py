@@ -116,11 +116,16 @@ class ExcelModel(Model):
     """docstring for ExcelModel"""
     def __init__(self):
         super().__init__()
-        self._name = "Excel model"
-        self._id = "sp-excel-model"
-        self._description = "Interface to an Excel file."
-        self._kpi_list = ['kpi1', 'kpi2']
-        self._inputs = []
 
     def run_model(self, inputs, kpi_alias):
-        return 'ExcelModel calculated KPI {0}!'.format(kpi_alias)
+        raise NotImplementedError()
+
+class RenobuildExcelModel(ExcelModel):
+    """docstring for RenobuildExcelModel"""
+    def __init__(self):
+        super().__init__()
+        self._name = "Renobuild"
+        self._id = "sp-renobuild-excel-model"
+        self._kpi_list = ['kpi1', 'kpi2']
+        self._description = "Interface to SP's LCA tool Renobuild."
+        self._inputs = []
