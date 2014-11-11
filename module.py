@@ -68,8 +68,8 @@ class Module(object):
         elif request['method'] == 'selectModel':
             if request['moduleId'] != self.id:
                 return
+            response['moduleId'] = self.id
             response['variantId'] = request['variantId']
-            response['moduleId'] = request['moduleId']
             response['kpiAlias'] = request['kpiAlias']
             response['inputs'] = self._inputs
             self._send_message(response)
@@ -77,8 +77,8 @@ class Module(object):
         elif request['method'] == 'startModel':
             if request['moduleId'] != self.id:
                 return
+            response['moduleId'] = self.id
             response['variantId'] = request['variantId']
-            response['moduleId'] = request['moduleId']
             response['kpiAlias'] = request['kpiAlias']
             response['status'] = ModelStatus.STARTING
             #TODO: self.start_model() something
