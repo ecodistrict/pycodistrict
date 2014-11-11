@@ -4,6 +4,7 @@ from pyimb import imb
 import logging
 from enum import Enum
 import threading
+from functools import partial
 
 MODELS_EVENT = 'models'
 DASHBOARD_EVENT = 'dashboard'
@@ -84,7 +85,7 @@ class Module(object):
             response['status'] = ModelStatus.STARTING.value
             self._send_message(response)
 
-            t = threading.Thread(partial(self._run_and_respond, request))
+            t = threading.Thread(target=partial(self._run_and_respond, request))
             t.start()
 
 
@@ -108,6 +109,8 @@ class Module(object):
             'kpiAlias': kpi_alias,
             'outputs': model_outputs
         }
+
+        self._send_message(message)
 
 class ExcelModule(Module):
     """docstring for ExcelModule"""
