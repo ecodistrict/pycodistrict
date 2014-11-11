@@ -3,6 +3,7 @@ import json
 from pyimb import imb
 import logging
 from enum import Enum
+import threading
 
 MODELS_EVENT = 'models'
 DASHBOARD_EVENT = 'dashboard'
@@ -80,9 +81,11 @@ class Module(object):
             response['moduleId'] = self.id
             response['variantId'] = request['variantId']
             response['kpiAlias'] = request['kpiAlias']
-            response['status'] = ModelStatus.STARTING
-            #TODO: self.start_model() something
+            response['status'] = ModelStatus.STARTING.value
             self._send_message(response)
+
+            t = threading.Thread(partial(self._run_and_respond, request))
+            t.start()
 
 
         else:
@@ -91,7 +94,20 @@ class Module(object):
     def _send_message(self, message):
         logging.debug('Sending message: {0}'.format(message))
         self._dashboard_event.signal_string(json.dumps(message))
-    
+
+    def _run_and_respond(request):
+        model_inputs = request['inputs']
+        kpi_alias = request['kpiAlias']
+        model_outputs = self.run_model(model_inputs, kpi_alias)
+
+        message = {
+            'method': 'modelResult',
+            'type': 'result',
+            'moduleId': self.id,
+            'variantId': request['variantId'],
+            'kpiAlias': kpi_alias,
+            'outputs': model_outputs
+        }
 
 class ExcelModule(Module):
     """docstring for ExcelModule"""
@@ -102,15 +118,5 @@ class ExcelModule(Module):
         self._description = "Interface to an Excel file."
         self._kpi_list = ['kpi1', 'kpi2']
 
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        
+    def run_model(self, inputs, kpi_alias):
+        return 'ExcelModule calculated KPI {0}!'.format(kpi_alias)
