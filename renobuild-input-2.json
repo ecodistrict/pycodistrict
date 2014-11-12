@@ -1,0 +1,49 @@
+[
+    {
+        "id": "time-frame",
+        "type": "number",
+        "label": "Time period for LCA calculation",
+        "unit": "years",
+        "min": 1,
+        "value": 50
+    },
+    {
+        "type": "geojson",
+        "geometryObject": "polygon",
+        "label": "Define building geometries and their heating systems",
+        "id": "buildings",
+        "inputs": [
+            {
+                "id": "heating-system",
+                "label": "Heating system",
+                "type": "select",
+                "options": [{
+                  "id": "individual-gas-boilers",
+                  "label": "Individual gas boilers"
+                }, {
+                  "id": "district-heating",
+                  "label": "District heating"
+                }, {
+                  "id": "heat-pumps",
+                  "label": "Individual heat pums"
+                }],
+                "value": "individual-gas-boilers"
+            },
+            {
+                "id": "num-storeys",
+                "type": "number",
+                "label": "Number of storeys",
+                "min": 1,
+                "value": 3
+            },
+            {
+                "id": "specific-energy-use",
+                "type": "number",
+                "label": "Annual heating demand",
+                "unit": "kWh/square meter/year",
+                "min": 0,
+                "value": 150
+            }
+        ]
+    }
+]
