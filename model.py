@@ -5,6 +5,9 @@ import logging
 from enum import Enum
 import threading
 from functools import partial
+import win32com.client
+from pywintypes import com_error
+import os.path
 
 MODELS_EVENT = 'models'
 DASHBOARD_EVENT = 'dashboard'
@@ -118,7 +121,27 @@ class ExcelModel(Model):
         super().__init__()
 
     def run_model(self, inputs, kpi_alias):
-        raise NotImplementedError()
+        # Initialize COM in this thread
+        win32com.client.pythoncom.CoInitialize()
+        excel = win32com.client.Dispatch('Excel.Application')
+        all_cells = tuple(self._input_cells.values()) + tuple(self._kpi_cells.values())
+        all_paths = set([c[0] for c in all_cells])
+        all_paths = {key: os.path.abspath(key) for key in all_paths}
+
+        workbooks = {key: excel.Workbooks.Open(path) for (key, path) in all_paths.items()}
+        for input_id, value in inputs.items():
+            filename, sheet, coords = self._input_cells[input_id]
+            cell = workbooks[filename].Worksheets(sheet).Cells(*coords)
+            cell.Value = value
+
+        filename, sheet, coords = self._kpi_cells[kpi_alias]
+        kpi_cell = workbooks[filename].Worksheets(sheet).Cells(*coords)
+        kpi_value = kpi_cell.Value
+
+        for wb in workbooks.values():
+            wb.Close(False)
+
+        return kpi_value
 
 class RenobuildExcelModel(ExcelModel):
     """docstring for RenobuildExcelModel"""
@@ -128,4 +151,36 @@ class RenobuildExcelModel(ExcelModel):
         self._id = "sp-renobuild-excel-model"
         self._kpi_list = ['kpi1', 'kpi2']
         self._description = "Interface to SP's LCA tool Renobuild."
-        self._inputs = []
+        self._input_cells = {
+            'num1': ('test.xlsx', 'Blad1', (3, 3)),
+            'num2': ('test.xlsx', 'Blad1', (2, 3))
+        }
+        self._kpi_cells = {
+            'kpi1': ('test.xlsx', 'Blad2', (1, 1)),
+            'kpi2': ('test.xlsx', 'Blad2', (1, 2))
+        }
+
+        self._inputs = [
+            {
+                "type": "input-group",
+                "label": "Some inputs",
+                "inputs": [
+                    {
+                        "label": "A number (cell C3)",
+                        "type": "number",
+                        "id": "num1",
+                        "unit": "m",
+                        "min": 50,
+                        "max": 100
+                    },
+                    {
+                        "label": "Another number (cell C2)",
+                        "type": "number",
+                        "min": 0,
+                        "unit": "m",
+                        "digits": 2,
+                        "id": "num2"
+                    }
+                ]
+            }
+        ]
