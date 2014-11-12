@@ -115,36 +115,8 @@ class Model(object):
 
         self._send_message(message)
 
-class ExcelModel(Model):
-    """docstring for ExcelModel"""
-    def __init__(self):
-        super().__init__()
-
-    def run_model(self, inputs, kpi_alias):
-        # Initialize COM in this thread
-        win32com.client.pythoncom.CoInitialize()
-        excel = win32com.client.Dispatch('Excel.Application')
-        all_cells = tuple(self._input_cells.values()) + tuple(self._kpi_cells.values())
-        all_paths = set([c[0] for c in all_cells])
-        all_paths = {key: os.path.abspath(key) for key in all_paths}
-
-        workbooks = {key: excel.Workbooks.Open(path) for (key, path) in all_paths.items()}
-        for input_id, value in inputs.items():
-            filename, sheet, coords = self._input_cells[input_id]
-            cell = workbooks[filename].Worksheets(sheet).Cells(*coords)
-            cell.Value = value
-
-        filename, sheet, coords = self._kpi_cells[kpi_alias]
-        kpi_cell = workbooks[filename].Worksheets(sheet).Cells(*coords)
-        kpi_value = kpi_cell.Value
-
-        for wb in workbooks.values():
-            wb.Close(False)
-
-        return kpi_value
-
-class RenobuildExcelModel(ExcelModel):
-    """docstring for RenobuildExcelModel"""
+class RenobuildModel(Model):
+    """docstring for RenobuildModel"""
     def __init__(self):
         super().__init__()
         self._name = "Renobuild"
@@ -184,3 +156,26 @@ class RenobuildExcelModel(ExcelModel):
                 ]
             }
         ]
+
+    def run_model(self, inputs, kpi_alias):
+        # Initialize COM in this thread
+        win32com.client.pythoncom.CoInitialize()
+        excel = win32com.client.Dispatch('Excel.Application')
+        all_cells = tuple(self._input_cells.values()) + tuple(self._kpi_cells.values())
+        all_paths = set([c[0] for c in all_cells])
+        all_paths = {key: os.path.abspath(key) for key in all_paths}
+
+        workbooks = {key: excel.Workbooks.Open(path) for (key, path) in all_paths.items()}
+        for input_id, value in inputs.items():
+            filename, sheet, coords = self._input_cells[input_id]
+            cell = workbooks[filename].Worksheets(sheet).Cells(*coords)
+            cell.Value = value
+
+        filename, sheet, coords = self._kpi_cells[kpi_alias]
+        kpi_cell = workbooks[filename].Worksheets(sheet).Cells(*coords)
+        kpi_value = kpi_cell.Value
+
+        for wb in workbooks.values():
+            wb.Close(False)
+
+        return kpi_value
