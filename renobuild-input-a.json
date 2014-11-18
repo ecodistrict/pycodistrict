@@ -13,17 +13,21 @@
         "id": "buildings",
         "inputs": [
             {
+                "id": "building-name",
+                "type": "text"
+            },
+            {
                 "id": "heating-system",
                 "label": "Heating system",
                 "type": "select",
                 "options": [{
-                  "id": "individual-gas-boilers",
+                  "id": 4,
                   "label": "Individual gas boilers"
                 }, {
-                  "id": "district-heating",
+                  "id": 2,
                   "label": "District heating"
                 }, {
-                  "id": "heat-pumps",
+                  "id": 1,
                   "label": "Individual heat pums"
                 }],
                 "value": "individual-gas-boilers"
