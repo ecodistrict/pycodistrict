@@ -3,87 +3,21 @@ import model
 import logging
 import os.path
 import json
+import time
+
+url = 'imb.lohman-solutions.com'
+port = 4000
 owner_id = 123
-owner_name = 'rasmus'
+owner_name = 'SP'
 federation = 'ecodistrict'
 
-#c = imb.Client(imb.TEST_URL, imb.TEST_PORT, owner_id, owner_name, federation)
-
 try:
+    c = imb.Client(url, port, owner_id, owner_name, federation)
     m = model.RenobuildModel()
-    #m.client = c
+    m.client = c
 
-    request = {
-    "method": "getModels",
-    "type": "request",
-    "parameters": {
-        "kpiList": "kpi1"
-    }
-    }
-
-    #m._handle_request(imb.encode_string(json.dumps(request)))
-
-    inputs = [
-        {
-            "id": "time-frame",
-            "type": "number",
-            "value": 50
-        },
-        {
-            "id": "buildings",
-            "type": "list",
-            "inputs": [
-                [
-                    {
-                        "id": "building-name",
-                        "type": "text",
-                        "value": "building A"
-                    },
-                    {
-                        "id": "heating-system",
-                        "type": "select",
-                        "value": 1
-                    },
-                    {
-                        "id": "energy-use",
-                        "type": "number",
-                        "value": 5000
-                    }
-                ],
-                [
-                    {
-                        "id": "building-name",
-                        "type": "text",
-                        "value": "building A"
-                    },
-                    {
-                        "id": "heating-system",
-                        "type": "select",
-                        "value": 2
-                    },
-                    {
-                        "id": "energy-use",
-                        "type": "number",
-                        "value": 10000
-                    }
-                ]
-            ]
-        }
-    ]
-
-    request = {
-        "method": "startModel",
-        "type": "request",
-        "moduleId": "sp-renobuild-excel-model",
-        "variantId": "variantId",
-        "kpiAlias": "energy-kpi",
-        "inputs": inputs
-    }
-
-    #m._handle_request(imb.encode_string(json.dumps(request)))
-    print(m.run_model(inputs, 'energy-kpi'))
-
-    #input()
+    time.sleep(0.5)
+    input('Listening for input... Press return to stop module.')
 
 finally:
-    pass#c.disconnect()
+    c.disconnect()
